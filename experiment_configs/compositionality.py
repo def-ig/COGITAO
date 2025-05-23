@@ -39,7 +39,8 @@ compositionality_configs.append(make_config(
      ["translate_up", "translate_up"], ["rot90", "rot90"],
      ["mirror_horizontal", "mirror_horizontal"],
      ["translate_up", "mirror_horizontal"],
-     ["rot90", "mirror_horizontal"],
+     ["rot90", "mirror_horizontal"], 
+     ["rot90", "translate_up"],
      ["mirror_horizontal", "rot90"]],
     1, 1, "train"))
 

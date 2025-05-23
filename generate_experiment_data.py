@@ -8,6 +8,7 @@ from utils.db_utils import access_db, close_db, store_task_in_db, hash_task
 from generator import generator
 from experiment_configs.compositionality import compositionality_configs
 from experiment_configs.generalization import generalization_configs
+from experiment_configs.sample_efficiency import sample_efficiency_configs
 
 def adapt_task_format(task, task_key):
     task_dict = {}
@@ -69,37 +70,68 @@ def generate_equal_balance_from_transforms(config, n_tasks_to_generate):
 
 
 if __name__ == "__main__":
-    configs_to_loop = [compositionality_configs, generalization_configs]
+    # configs_to_loop = [compositionality_configs, generalization_configs]
 
-    n_train = 100000
-    n_test = 1000
-    n_val = 1000
+    # n_train = 100000
+    # n_test = 1000
+    # n_val = 1000
 
-    for study in configs_to_loop:
-        for config in tqdm(study):
-            if "train" in config["saving_path"]:
-                generate_equal_balance_from_transforms(config, n_train)
+    # for study in configs_to_loop:
+    #     for config in tqdm(study):
+    #         if "train" in config["saving_path"]:
+    #             generate_equal_balance_from_transforms(config, n_train)
                 
-                # Add train_val split
-                train_val_config = copy.deepcopy(config)
-                train_val_config["saving_path"] = train_val_config["saving_path"].replace("train", "val")
-                generate_equal_balance_from_transforms(train_val_config, n_val)
+    #             # Add train_val split
+    #             train_val_config = copy.deepcopy(config)
+    #             train_val_config["saving_path"] = train_val_config["saving_path"].replace("train", "val")
+    #             generate_equal_balance_from_transforms(train_val_config, n_val)
                 
-                # Add test split (in distribution)
-                train_test_config = copy.deepcopy(config)
-                train_test_config["saving_path"] = train_test_config["saving_path"].replace("train", "test")
-                generate_equal_balance_from_transforms(train_test_config, n_test)
+    #             # Add test split (in distribution)
+    #             train_test_config = copy.deepcopy(config)
+    #             train_test_config["saving_path"] = train_test_config["saving_path"].replace("train", "test")
+    #             generate_equal_balance_from_transforms(train_test_config, n_test)
 
-            elif "test" in config["saving_path"]:
+    #         elif "test" in config["saving_path"]:
                 
-                # Val OOD split
-                val_ood_config = copy.deepcopy(config)
-                val_ood_config["saving_path"] = val_ood_config["saving_path"].replace("test", "val_ood")
-                generate_equal_balance_from_transforms(val_ood_config, n_val)
+    #             # Val OOD split
+    #             val_ood_config = copy.deepcopy(config)
+    #             val_ood_config["saving_path"] = val_ood_config["saving_path"].replace("test", "val_ood")
+    #             generate_equal_balance_from_transforms(val_ood_config, n_val)
                 
-                # Test OOD split
-                test_ood_config = copy.deepcopy(config)
-                test_ood_config["saving_path"] = test_ood_config["saving_path"].replace("test", "test_ood")
-                generate_equal_balance_from_transforms(test_ood_config, n_test)
-            else:
-                print(f"Saving path {config['saving_path']} not recognized.")
+    #             # Test OOD split
+    #             test_ood_config = copy.deepcopy(config)
+    #             test_ood_config["saving_path"] = test_ood_config["saving_path"].replace("test", "test_ood")
+    #             generate_equal_balance_from_transforms(test_ood_config, n_test)
+    #         else:
+    #             print(f"Saving path {config['saving_path']} not recognized.")
+
+    ## For sample efficiency - comment out the above and uncomment the below
+
+    n_train = [10, 20, 30, 40]
+    n_test = 10
+    n_val = 10
+
+    print("wtf is going on")
+    print(sample_efficiency_configs)
+
+    for config in tqdm(sample_efficiency_configs):
+        print(config)
+        for exp_setting in range(1, len(n_train) + 1):
+            updated_config = copy.deepcopy(config)
+            updated_config["saving_path"] = updated_config["saving_path"].replace("exp_setting_1", f"exp_setting_{exp_setting}")
+
+            train_config = copy.deepcopy(updated_config)
+            train_config["saving_path"] = train_config["saving_path"].replace("train", "train")
+            
+            val_config = copy.deepcopy(updated_config)
+            val_config["saving_path"] = val_config["saving_path"].replace("train", "val")
+
+            test_config = copy.deepcopy(updated_config)
+            test_config["saving_path"] = test_config["saving_path"].replace("train", "test")
+
+            generate_equal_balance_from_transforms(train_config, n_train[exp_setting - 1])
+            generate_equal_balance_from_transforms(val_config, n_val)
+            generate_equal_balance_from_transforms(test_config, n_test)
+            
+
+
