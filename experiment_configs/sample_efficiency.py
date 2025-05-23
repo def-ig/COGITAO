@@ -43,3 +43,20 @@ sample_efficiency_configs.append(make_config(
 
 sample_efficiency_configs.append(make_config(
     [["empty_inside_pixels"]], 1, 5, "train"))
+
+sample_efficiency_configs.append(make_config(
+    [["crop_top_side"]], 1, 6, "train"))
+
+sample_efficiency_configs.append(make_config(
+    [["fill_holes_different_color"]], 1, 7, "train"))
+
+sample_efficiency_configs.append(make_config(
+    [["double_up"]], 1, 8, "train"))
+
+sample_efficiency_configs.append(make_config(
+    [["change_shape_color"]], 1, 9, "train"))
+
+sample_efficiency_configs.append(make_config(
+    [["pad_shape"]], 1, 10, "train"))
+
+
