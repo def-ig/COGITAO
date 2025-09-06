@@ -113,8 +113,6 @@ compositionality_configs.append(make_config(
     [["pad_left", "extend_contours_same_color"]],
     1, 5, "test"))
 
-
-
 # === Setting 2 ===
 
 # Exp 1
@@ -340,3 +338,4 @@ compositionality_configs.append(make_config(
       ["mirror_vertical", "extend_contours_same_color", "pad_left"],
       ["mirror_vertical", "pad_left", "extend_contours_same_color"]],
     3, 5, "test", 20, 20))
+
