@@ -49,6 +49,7 @@ def generate_equal_balance_from_transforms(config, n_tasks_to_generate):
             count_per_transform = 0
             editable_config["allowed_combinations"] = [transform]
             gen = generator(editable_config)
+            
             while count_per_transform < n_per_transform and len(task_list) < n_tasks_to_generate:
                 try: 
                     task = gen.generate_single_task()
@@ -58,10 +59,11 @@ def generate_equal_balance_from_transforms(config, n_tasks_to_generate):
                                           ready_to_export_task["transformation_suite"])
                     if store_task_in_db(cursor, conn, task_key, task_hash, \
                                         str(ready_to_export_task['transformation_suite']), 
-                                        debug=False): # If the task is not a duplicate
+                                        debug=True): # If the task is not a duplicate
                         task_list.append(ready_to_export_task)
                         count_per_transform += 1
                 except Exception as e:
+                    
                     print(e)
                     continue
     close_db(conn)
@@ -77,38 +79,44 @@ if __name__ == "__main__":
     
     configs_to_loop = [compositionality_gridsize_config]
 
-    n_train = 100000
-    n_test = 1000
-    n_val = 1000
+    n_train = 10
+    n_test = 10
+    n_val = 10
 
     for study in configs_to_loop:
         for config in tqdm(study):
-            if "train" in config["saving_path"]:
-                generate_equal_balance_from_transforms(config, n_train)
-                
-                # Add train_val split
-                train_val_config = copy.deepcopy(config)
-                train_val_config["saving_path"] = train_val_config["saving_path"].replace("train", "val")
-                generate_equal_balance_from_transforms(train_val_config, n_val)
-                
-                # Add test split (in distribution)
-                train_test_config = copy.deepcopy(config)
-                train_test_config["saving_path"] = train_test_config["saving_path"].replace("train", "test")
-                generate_equal_balance_from_transforms(train_test_config, n_test)
+            
+            # TEST 
+            if config["saving_path"] == "before_arc_datasets/compositionality_gridsize/exp_setting_3/experiment_1/grid_size_30/test.json":
+                print("working on config with path:",config["saving_path"], config)
+                # TEST 
+           
+                if "train" in config["saving_path"]:
+                    generate_equal_balance_from_transforms(config, n_train)
+                    
+                    # Add train_val split
+                    train_val_config = copy.deepcopy(config)
+                    train_val_config["saving_path"] = train_val_config["saving_path"].replace("train", "val")
+                    generate_equal_balance_from_transforms(train_val_config, n_val)
+                    
+                    # Add test split (in distribution)
+                    train_test_config = copy.deepcopy(config)
+                    train_test_config["saving_path"] = train_test_config["saving_path"].replace("train", "test")
+                    generate_equal_balance_from_transforms(train_test_config, n_test)
 
-            elif "test" in config["saving_path"]:
-                
-                # Val OOD split
-                val_ood_config = copy.deepcopy(config)
-                val_ood_config["saving_path"] = val_ood_config["saving_path"].replace("test", "val_ood")
-                generate_equal_balance_from_transforms(val_ood_config, n_val)
-                
-                # Test OOD split
-                test_ood_config = copy.deepcopy(config)
-                test_ood_config["saving_path"] = test_ood_config["saving_path"].replace("test", "test_ood")
-                generate_equal_balance_from_transforms(test_ood_config, n_test)
-            else:
-                print(f"Saving path {config['saving_path']} not recognized.")
+                elif "test" in config["saving_path"]:
+                    
+                    # Val OOD split
+                    val_ood_config = copy.deepcopy(config)
+                    val_ood_config["saving_path"] = val_ood_config["saving_path"].replace("test", "val_ood")
+                    generate_equal_balance_from_transforms(val_ood_config, n_val)
+                    
+                    # Test OOD split
+                    test_ood_config = copy.deepcopy(config)
+                    test_ood_config["saving_path"] = test_ood_config["saving_path"].replace("test", "test_ood")
+                    generate_equal_balance_from_transforms(test_ood_config, n_test)
+                else:
+                    print(f"Saving path {config['saving_path']} not recognized.")
 
     ## For sample efficiency - comment out the above and uncomment the below
 
