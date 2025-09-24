@@ -9,6 +9,8 @@ from arcworld.constants import COLORMAP, NORM, DoesNotFitException
 from arcworld.shapes.base import Shape
 from arcworld.shapes.utils import grid_to_cropped_grid, shift_indexes, grid_to_pc
 from scipy.ndimage import binary_dilation
+from matplotlib import colors
+from PIL import Image
 
 ###################################################### PLOTTING ######################################################
 
@@ -25,6 +27,39 @@ def plot_grid(grid, title = '', size = (10,10), save_path = None):
     ax.set_title(title)
     if type(save_path) == str:
         plt.savefig(save_path)
+
+
+def grid_to_rgb_sized(grid, output_size=(128, 128)):
+    """
+    Convert a NumPy grid with integers (0-9) to an RGB image and resize to specified size.
+    
+    Args:
+        grid (np.ndarray): 2D array with integer values between 0 and 9.
+        output_size (tuple): Desired output size (width, height), default is (128, 128).
+    
+    Returns:
+        np.ndarray: RGB image array of shape (height, width, 3) resized to output_size.
+    """
+    COLORMAP = colors.ListedColormap(
+        ['#FFFFFF', '#0074D9', '#FF4136', '#2ECC40', '#FFDC00',
+         '#AAAAAA', '#F012BE', '#FF851B', '#7FDBFF', '#870C25'])
+    
+    # Validate input
+    if not isinstance(grid, np.ndarray) or grid.ndim != 2 or not np.issubdtype(grid.dtype, np.integer) or grid.min() < 0 or grid.max() > 9:
+        raise ValueError("Grid must be a 2D NumPy array with integers between 0 and 9")
+    
+    # Normalize grid values to [0, 1] for colormap
+    norm = colors.Normalize(vmin=0, vmax=9)
+    # Apply colormap to get RGB values
+    rgb = COLORMAP(norm(grid))
+    # Convert to uint8 RGB image (remove alpha channel)
+    rgb_uint8 = (rgb[:, :, :3] * 255).astype(np.uint8)
+    
+    # Resize using PIL
+    img = Image.fromarray(rgb_uint8)
+    img_resized = img.resize(output_size, resample=Image.Resampling.NEAREST)
+    
+    return np.array(img_resized)
 
     
 

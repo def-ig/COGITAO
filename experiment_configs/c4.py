@@ -1,7 +1,7 @@
 import copy
 import itertools
 
-cp_path = "before_arc_datasets/c4"
+cp_path = "before_arc_datasets/c4_newversion"
 
 cp_base_config = {
     "min_n_shapes_per_grid": 2,
@@ -32,14 +32,14 @@ def make_config(combos, setting, exp_number, split, min_size=20, max_size=20):
 c4_configs = []
 
 base_transforms = [
-    "mirror_horizontal",   
-    "crop_top_side",       
+    "mirror_horizontal",               
+    "rot90", # PREVIOUSLY crop_top_side
     "double_right",        
 ]
 
 extra_transforms = [
-    "translate_up",            
-    "rot90",                   
+    "translate_up",
+    "crop_top_side", # previously rot90              
     "mirror_vertical",         
     "pad_top",                 
     "translate_right",         
@@ -57,7 +57,7 @@ def all_single_and_double(transforms):
     doubles = [list(pair) for pair in itertools.combinations(transforms, 2)]
     return singles + doubles
 
-test_combo = [["double_right", "mirror_horizontal"]]
+test_combo = [["double_right", "rot90"]] # Previously double_right, mirror_horizontal
 
 # number of transformations for each experiment
 exp_sizes = [3, 6, 9, 12, 15]
@@ -65,6 +65,13 @@ exp_sizes = [3, 6, 9, 12, 15]
 for exp_num, size in enumerate(exp_sizes, start=1):
     pool = base_transforms + extra_transforms[: size - len(base_transforms)]
     train_combos = all_single_and_double(pool)
+    if ["double_right", "rot90"] in train_combos:
+        train_combos.remove(['double_right', 'rot90']) # remove test combo from train combos
+
+    if ["fill_holes_different_color", "empty_inside_pixels"] in train_combos:
+        train_combos.remove(['fill_holes_different_color', 'empty_inside_pixels']) 
+    if ["fill_holes_same_color", "empty_inside_pixels"] in train_combos:
+        train_combos.remove(['fill_holes_same_color', 'empty_inside_pixels'])
 
     c4_configs.append(
         make_config(train_combos, setting=4, exp_number=exp_num, split="train")

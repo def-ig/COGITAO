@@ -10,6 +10,7 @@ from experiment_configs.compositionality import compositionality_configs
 from experiment_configs.generalization import generalization_configs
 from experiment_configs.sample_efficiency import sample_efficiency_configs
 from experiment_configs.compositionality_gridsize import compositionality_gridsize_config
+from experiment_configs.c4 import c4_configs
 
 def adapt_task_format(task, task_key):
     task_dict = {}
@@ -77,7 +78,7 @@ if __name__ == "__main__":
     
     # configs_to_loop = [compositionality_configs, generalization_configs]
     
-    configs_to_loop = [compositionality_gridsize_config]
+    configs_to_loop = [c4_configs]
 
     n_train = 100000
     n_test = 1000
@@ -85,8 +86,10 @@ if __name__ == "__main__":
 
     for study in configs_to_loop:
         for config in tqdm(study):
-
             print("working on config with path:",config["saving_path"])
+            
+            # config["allowed_combinations"].remove(['fill_holes_same_color', 'empty_inside_pixels'])
+            # config["allowed_combinations"].remove(['fill_holes_different_color', 'empty_inside_pixels'])
 
             if "train" in config["saving_path"]:
                 generate_equal_balance_from_transforms(config, n_train)
