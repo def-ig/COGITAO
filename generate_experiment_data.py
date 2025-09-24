@@ -4,6 +4,8 @@ import numpy as np
 from tqdm import tqdm
 import copy
 import json
+import pandas
+import time
 from utils.db_utils import access_db, close_db, store_task_in_db, hash_task
 from generator import generator
 from experiment_configs.compositionality import compositionality_configs
@@ -76,47 +78,57 @@ def generate_equal_balance_from_transforms(config, n_tasks_to_generate):
 if __name__ == "__main__":
     
     
-    # configs_to_loop = [compositionality_configs, generalization_configs]
-    
-    configs_to_loop = [c4_configs]
+    configs_to_loop = [compositionality_configs]
+    # configs_to_loop = [compositionality_gridsize_config]
 
     n_train = 100000
-    n_test = 1000
-    n_val = 1000
+    n_test = 100
+    n_val = 100
+    
+    # df will be used to store how long each config took
+    time_dict = {}
 
     for study in configs_to_loop:
         for config in tqdm(study):
-            print("working on config with path:",config["saving_path"])
-            
-            # config["allowed_combinations"].remove(['fill_holes_same_color', 'empty_inside_pixels'])
-            # config["allowed_combinations"].remove(['fill_holes_different_color', 'empty_inside_pixels'])
+            if "experiment_4" in config["saving_path"]:
+                start_time = time.time()
+                print("working on config with path:",config["saving_path"])
 
-            if "train" in config["saving_path"]:
-                generate_equal_balance_from_transforms(config, n_train)
-                
-                # Add train_val split
-                train_val_config = copy.deepcopy(config)
-                train_val_config["saving_path"] = train_val_config["saving_path"].replace("train", "val")
-                generate_equal_balance_from_transforms(train_val_config, n_val)
-                
-                # Add test split (in distribution)
-                train_test_config = copy.deepcopy(config)
-                train_test_config["saving_path"] = train_test_config["saving_path"].replace("train", "test")
-                generate_equal_balance_from_transforms(train_test_config, n_test)
+                if "train" in config["saving_path"]:
+                    generate_equal_balance_from_transforms(config, n_train)
+                    
+                    # Add train_val split
+                    train_val_config = copy.deepcopy(config)
+                    train_val_config["saving_path"] = train_val_config["saving_path"].replace("train", "val")
+                    generate_equal_balance_from_transforms(train_val_config, n_val)
+                    
+                    # # Add test split (in distribution)
+                    train_test_config = copy.deepcopy(config)
+                    train_test_config["saving_path"] = train_test_config["saving_path"].replace("train", "test")
+                    generate_equal_balance_from_transforms(train_test_config, n_test)
 
-            elif "test" in config["saving_path"]:
-                
-                # Val OOD split
-                val_ood_config = copy.deepcopy(config)
-                val_ood_config["saving_path"] = val_ood_config["saving_path"].replace("test", "val_ood")
-                generate_equal_balance_from_transforms(val_ood_config, n_val)
-                
-                # Test OOD split
-                test_ood_config = copy.deepcopy(config)
-                test_ood_config["saving_path"] = test_ood_config["saving_path"].replace("test", "test_ood")
-                generate_equal_balance_from_transforms(test_ood_config, n_test)
-            else:
-                print(f"Saving path {config['saving_path']} not recognized.")
+                elif "test" in config["saving_path"]:
+                    
+                    # Val OOD split
+                    val_ood_config = copy.deepcopy(config)
+                    val_ood_config["saving_path"] = val_ood_config["saving_path"].replace("test", "val_ood")
+                    generate_equal_balance_from_transforms(val_ood_config, n_val)
+                    
+                    # Test OOD split
+                    test_ood_config = copy.deepcopy(config)
+                    test_ood_config["saving_path"] = test_ood_config["saving_path"].replace("test", "test_ood")
+                    generate_equal_balance_from_transforms(test_ood_config, n_test)
+                    
+                else:
+                    print(f"Saving path {config['saving_path']} not recognized.")
+                    
+                end = time.time()
+                print(f"Time taken: {end - start_time} seconds")
+                time_dict[config["saving_path"]] = end - start_time
+
+    # convert the dict to a dataframe and save as csv
+    df = pandas.DataFrame(list(time_dict.items()), columns=['config_path', 'time_taken_seconds'])
+    df.to_csv("generation_times.csv", index=False)
 
     ## For sample efficiency - comment out the above and uncomment the below
 

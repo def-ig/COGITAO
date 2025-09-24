@@ -108,8 +108,7 @@ c32_train = [["pad_right"], ["fill_holes_different_color"], ["change_shape_color
       ["pad_right", "fill_holes_different_color"], ["pad_right", "change_shape_color"],
       ["fill_holes_different_color", "change_shape_color"]]
 
-c32_test = [["pad_right", "pad_right", "pad_right"],
-      ["pad_right", "pad_right", "fill_holes_different_color"],
+c32_test = [["pad_right", "pad_right", "fill_holes_different_color"],
       ["pad_right", "pad_right", "change_shape_color"],
       ["pad_right", "fill_holes_different_color", "fill_holes_different_color"],
       ["pad_right", "fill_holes_different_color", "change_shape_color"],
@@ -152,8 +151,7 @@ c34_train = [["double_right"], ["crop_contours"], ["change_shape_color"],
              ["double_right", "crop_contours"], ["double_right", "change_shape_color"],
              ["crop_contours", "change_shape_color"]]
 
-c34_test = [["double_right", "double_right", "double_right"],
-             ["double_right", "double_right", "crop_contours"],
+c34_test = [["double_right", "double_right", "crop_contours"],
              ["double_right", "double_right", "change_shape_color"],
              ["double_right", "crop_contours", "crop_contours"],
              ["double_right", "crop_contours", "change_shape_color"],
@@ -173,8 +171,7 @@ c35_train = [["extend_contours_same_color"], ["pad_left"], ["mirror_vertical"],
       ["extend_contours_same_color", "pad_left"], ["extend_contours_same_color", "mirror_vertical"],
       ["pad_left", "mirror_vertical"]]
 
-c35_test = [["extend_contours_same_color", "extend_contours_same_color", "extend_contours_same_color"],
-      ["extend_contours_same_color", "extend_contours_same_color", "pad_left"],
+c35_test = [["extend_contours_same_color", "extend_contours_same_color", "pad_left"],
       ["extend_contours_same_color", "extend_contours_same_color", "mirror_vertical"],
       ["extend_contours_same_color", "pad_left", "pad_left"],
       ["extend_contours_same_color", "pad_left", "mirror_vertical"],

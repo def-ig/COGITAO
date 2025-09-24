@@ -84,17 +84,17 @@ compositionality_configs.append(make_config(
 # Exp 4
 
 compositionality_configs.append(make_config(
-    [["extend_contours_different_color"], ["mirror_horizontal"], ["translate_down"],
-      ["extend_contours_different_color", "extend_contours_different_color"],
-      ["mirror_horizontal", "mirror_horizontal"],
-      ["translate_down", "translate_down"],
-      ["translate_down", "mirror_horizontal"],
-      ["extend_contours_different_color", "mirror_horizontal"],
-      ["extend_contours_different_color", "translate_down"]],
+    [["double_right"], ["crop_contours"], ["change_shape_color"], 
+    ["double_right", "double_right"],
+    ["crop_contours", "crop_contours"],
+    ["change_shape_color", "change_shape_color"],
+    ["double_right", "change_shape_color"],
+    ["crop_contours", "change_shape_color"],
+    ["change_shape_color", "double_right"]],
     1, 4, "train"))
 
 compositionality_configs.append(make_config(
-    [["mirror_horizontal", "extend_contours_different_color"]],
+    [["double_right", "crop_contours"]],
     1, 4, "test"))
 
 # Exp 5
@@ -164,16 +164,16 @@ compositionality_configs.append(make_config(
 # Exp 4
 
 compositionality_configs.append(make_config(
-    [["extend_contours_different_color", "extend_contours_different_color"],
-      ["mirror_horizontal", "mirror_horizontal"],
-      ["translate_down", "translate_down"],
-      ["translate_down", "mirror_horizontal"],
-      ["extend_contours_different_color", "mirror_horizontal"],
-      ["extend_contours_different_color", "translate_down"]],
+    [["double_right", "double_right"],
+      ["crop_contours", "crop_contours"],
+      ["change_shape_color", "change_shape_color"],
+      ["double_right", "change_shape_color"],
+      ["crop_contours", "change_shape_color"],
+      ["change_shape_color", "double_right"]],
     2, 4, "train"))
 
 compositionality_configs.append(make_config(
-    [["mirror_horizontal", "extend_contours_different_color"]],
+    [["double_right", "crop_contours"]],
     2, 4, "test"))
 
 
@@ -283,32 +283,28 @@ compositionality_configs.append(make_config(
 # Exp 4
 
 compositionality_configs.append(make_config(
-    [["extend_contours_different_color"], ["mirror_horizontal"], ["translate_down"],
-      ["extend_contours_different_color", "extend_contours_different_color"],
-      ["mirror_horizontal", "mirror_horizontal"],
-      ["translate_down", "translate_down"],
-      ["extend_contours_different_color", "mirror_horizontal"],
-      ["extend_contours_different_color", "translate_down"],
-      ["mirror_horizontal", "translate_down"]],
+    [["double_right"], ["crop_contours"], ["change_shape_color"],
+      ["double_right", "double_right"], ["crop_contours", "crop_contours"], 
+      ["change_shape_color", "change_shape_color"],
+      ["double_right", "crop_contours"], ["double_right", "change_shape_color"],
+      ["crop_contours", "change_shape_color"]],
     3, 4, "train", 20, 20))
 
 compositionality_configs.append(make_config(
-    [["extend_contours_different_color", "extend_contours_different_color", "extend_contours_different_color"],
-      ["extend_contours_different_color", "extend_contours_different_color", "mirror_horizontal"],
-      ["extend_contours_different_color", "extend_contours_different_color", "translate_down"],
-      ["extend_contours_different_color", "mirror_horizontal", "mirror_horizontal"],
-      ["extend_contours_different_color", "mirror_horizontal", "translate_down"],
-      ["extend_contours_different_color", "translate_down", "translate_down"],
-      ["mirror_horizontal", "mirror_horizontal", "mirror_horizontal"],
-      ["mirror_horizontal", "mirror_horizontal", "translate_down"],
-      ["mirror_horizontal", "translate_down", "translate_down"],
-      ["translate_down", "translate_down", "translate_down"],
-      ["extend_contours_different_color", "mirror_horizontal", "extend_contours_different_color"],
-      ["extend_contours_different_color", "translate_down", "extend_contours_different_color"],
-      ["mirror_horizontal", "translate_down", "extend_contours_different_color"],
-      ["mirror_horizontal", "extend_contours_different_color", "translate_down"],
-      ["translate_down", "extend_contours_different_color", "mirror_horizontal"],
-      ["translate_down", "mirror_horizontal", "extend_contours_different_color"]],
+    [["double_right", "double_right", "crop_contours"],
+    ["double_right", "double_right", "change_shape_color"],
+    ["double_right", "crop_contours", "crop_contours"],
+    ["double_right", "crop_contours", "change_shape_color"],
+    ["double_right", "change_shape_color", "change_shape_color"],
+    ["crop_contours", "crop_contours", "change_shape_color"],
+    ["crop_contours", "change_shape_color", "change_shape_color"],
+    ["change_shape_color", "change_shape_color", "change_shape_color"],
+    ["double_right", "crop_contours", "double_right"],
+    ["double_right", "change_shape_color", "double_right"],
+    ["crop_contours", "change_shape_color", "double_right"],
+    ["crop_contours", "double_right", "change_shape_color"],
+    ["change_shape_color", "double_right", "crop_contours"],
+    ["change_shape_color", "crop_contours", "double_right"]],
     3, 4, "test", 20, 20))
 
 # Exp 5
