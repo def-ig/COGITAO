@@ -19,7 +19,7 @@ $ pip install -e .
 
 ## Run code 
 
-Use of our generator is demonstrated in the `demo.ipynb` jupyter notebook. 
+Use of our generator is demonstrated in the `demo.ipynb` jupyter notebook...
 
 <!-- 
 
