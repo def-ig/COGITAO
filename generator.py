@@ -9,7 +9,6 @@ from arcworld.hdf5_utils import load_shape
 from arcworld.shapes.base import Shape
 from arcworld.general_utils import position_shape_in_world, randomly_add_shape_to_world, generate_key
 from arcworld.constants import DoesNotFitException, ShapeOutOfBounds
-
 from arcworld.conditionals.single_shape_conditionals import conditionals_dict as single_shape_conditionals_dict
 from arcworld.transformations.shape_transformations import transformations_dict, transformations_constraints
 
@@ -199,15 +198,64 @@ class generator():
         output_grid (np.ndarray): grid with positionned shape
         """
         output_grid = np.zeros_like(input_grid) 
+        full_grid_sequence = [input_grid.copy()] # To keep track of the full sequence of grids
         for original_shape in shapes_positionned:
             transformed_shape = original_shape
             for t in transform_suite:
                 transformed_shape = self.transformations_dict[t](transformed_shape)                
+                
             if transformed_shape.is_null == False: ### Invalidate the whole initial grid
                 output_grid = position_shape_in_world(output_grid, transformed_shape)
             else:
                 output_grid = None # If the shape is null, we invalidate the whole grid
-        return output_grid
+            full_grid_sequence.append(output_grid.copy())
+        return output_grid, full_grid_sequence
+    
+    def apply_transform_suite_to_grid_2(self, transform_suite, input_grid, shapes_positionned):
+        """
+        Apply the transformation suite to the grid and return the output grid.
+        This version loops over transformations first, then shapes.
+
+        Parameters:
+        transform_suite (list): the transformation sequence for the task. e.g. ["translate_up", "fill_holes"]
+        input_grid (np.ndarray): grid with positioned shapes
+        shapes_positionned (list[Shape]): list of Shapes.
+
+        Returns:
+        output_grid (np.ndarray): grid with positioned shapes
+        full_grid_sequence (list): sequence of grid states after each transformation
+        """
+        output_grid = np.zeros_like(input_grid)
+        full_grid_sequence = [input_grid.copy()]
+
+        # Start with the original shapes
+        current_shapes = shapes_positionned
+
+        for t in transform_suite:
+            transformed_shapes = []
+            for shape in current_shapes:
+                transformed_shape = self.transformations_dict[t](shape)
+                transformed_shapes.append(transformed_shape)
+            current_shapes = transformed_shapes
+
+            # Build grid for this transformation step
+            temp_grid = np.zeros_like(input_grid)
+            for shape in current_shapes:
+                if not shape.is_null:
+                    temp_grid = position_shape_in_world(temp_grid, shape)
+                else:
+                    temp_grid = None
+                    break
+            full_grid_sequence.append(temp_grid.copy() if temp_grid is not None else None)
+
+        # Final output grid is the last valid temp_grid
+        output_grid = full_grid_sequence[-1] if full_grid_sequence[-1] is not None else None
+        return output_grid, full_grid_sequence
+
+    
+
+
+    
     
 
 
@@ -232,10 +280,11 @@ class generator():
                 and len(generated_pairs) < self.config.n_examples:
                 try:
                     input_grid, shapes_positionned = self.set_up_initial_grid(compatible_shape_rows=compatible_shape_rows)
-                    output_grid = self.apply_transform_suite_to_grid(transform_suite, input_grid, shapes_positionned)
+                    output_grid, full_grid_sequence = self.apply_transform_suite_to_grid_2(transform_suite, input_grid, shapes_positionned)
                     to_append = {'input': input_grid, 'output': output_grid, 
                                     'n_shapes': len(shapes_positionned), 
-                                    'grid_size': input_grid.shape}
+                                    'grid_size': input_grid.shape, 
+                                    'full_grid_sequence': full_grid_sequence}
                     generated_pairs.append(to_append)
                     failed_transform_trials = 0 # If we successfully generate a grid, we reset the failed trials
                 except Exception as e:
@@ -246,6 +295,7 @@ class generator():
             if len(generated_pairs) == self.config.n_examples:
                 n_config_trials = 0 # If we successfully generate a grid, we reset the config trials
                 return {"pairs": generated_pairs,
+                        "full_grid_sequence": full_grid_sequence,
                         "transformation_suite": transform_suite,
                 }
             elif failed_transform_trials >= self.max_trials_for_function_combination:
