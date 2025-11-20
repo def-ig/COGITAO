@@ -8,7 +8,8 @@ import pandas
 import time
 from utils.db_utils import access_db, close_db, store_task_in_db, hash_task
 from generator import generator
-from experiment_configs.compositionality import compositionality_configs
+from experiment_configs.c0 import compositionality_configs as c0_configs
+from experiment_configs.compositionality import compositionality_configs 
 from experiment_configs.generalization import generalization_configs
 from experiment_configs.sample_efficiency import sample_efficiency_configs
 from experiment_configs.compositionality_gridsize import compositionality_gridsize_config
@@ -81,7 +82,7 @@ if __name__ == "__main__":
     configs_to_loop = [compositionality_configs]
     # configs_to_loop = [compositionality_gridsize_config]
 
-    n_train = 100000
+    n_train = 100
     n_test = 100
     n_val = 100
     
@@ -90,9 +91,9 @@ if __name__ == "__main__":
 
     for study in configs_to_loop:
         for config in tqdm(study):
-            if "experiment_4" in config["saving_path"]:
-                start_time = time.time()
-                print("working on config with path:",config["saving_path"])
+            start_time = time.time()
+            print("working on config with path:",config["saving_path"])
+            if "experiment_1" in config["saving_path"]:
 
                 if "train" in config["saving_path"]:
                     generate_equal_balance_from_transforms(config, n_train)
@@ -121,10 +122,10 @@ if __name__ == "__main__":
                     
                 else:
                     print(f"Saving path {config['saving_path']} not recognized.")
-                    
-                end = time.time()
-                print(f"Time taken: {end - start_time} seconds")
-                time_dict[config["saving_path"]] = end - start_time
+                
+            end = time.time()
+            print(f"Time taken: {end - start_time} seconds")
+            time_dict[config["saving_path"]] = end - start_time
 
     # convert the dict to a dataframe and save as csv
     df = pandas.DataFrame(list(time_dict.items()), columns=['config_path', 'time_taken_seconds'])
