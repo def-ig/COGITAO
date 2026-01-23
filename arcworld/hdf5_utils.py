@@ -1,9 +1,10 @@
 import os
 import h5py
 
-current_path = os.getcwd()
+current_path = os.path.dirname(__file__)
 
-SHAPE_DATASET_PATH = os.path.join(current_path, 'arcworld', 'datasets', 'shapes.h5')
+SHAPE_DATASET_PATH = os.path.join(current_path, 'datasets', 'shapes.h5')
+
 
 def load_h5(f, filename):
     return f[filename][()]
