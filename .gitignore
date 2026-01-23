@@ -3,3 +3,4 @@
 *.h5
 arcworld/datasets/shapes.h5
 paper_plots/*
+before_arc_datasets
