@@ -1,5 +1,5 @@
 [tool.poetry]
-name = "before-arc"
+name = "arcworld"
 version = "0.1.0"
 description = "Synthetic task generation for the ARC Challange"
 authors = ["yassinetb <ybenchekroun@outlook.com>"]

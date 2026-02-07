@@ -1,10 +1,8 @@
-import random
-
 import numpy as np
 
-from arcworld.shapes.random_shape import RandomShapeParams, RandomShape
-from arcworld.general_utils import plot_grid
-from arcworld.general_utils import randomly_add_shape_to_world
+from .random_shape import RandomShapeParams, RandomShape
+from ..general_utils import plot_grid
+from ..general_utils import randomly_add_shape_to_world
 
 RandomShapeParams.allowed_color_pattern = {'uniform': 1, 'top_bot': 2, 'left_right': 2,
                              'col_stripes': 2,
