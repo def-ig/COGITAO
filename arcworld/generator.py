@@ -20,9 +20,11 @@ from .utils.config_validation import ConfigValidator
 
 
 class Generator:
-    def __init__(self, config, debug_mode=False):
-
-        self.config = ConfigValidator(**config)
+    def __init__(self, config: dict | ConfigValidator, debug_mode=False):
+        if isinstance(config, ConfigValidator):
+            self.config = config
+        else:
+            self.config = ConfigValidator(**config)
         self.transformations_dict = transformations_dict  ## Loads transformations_dict into the class (from the ...transformation.py files)
         self.transformations_constraints = transformations_constraints
 
