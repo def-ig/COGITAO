@@ -3,7 +3,7 @@
 > [!CAUTION]
 > **This repository is no longer maintained.**
 
-All functionality and code from this wrapper have been merged directly into the core **[yassinetb/COGITAO](https://github.com/yassinetb/COGITAO)** repository. 
+The code has been merged directly into the core **[yassinetb/COGITAO](https://github.com/yassinetb/COGITAO)** repository. 
 
 Please migrate your projects to use the main repository for the latest features, bug fixes, and support.
 
